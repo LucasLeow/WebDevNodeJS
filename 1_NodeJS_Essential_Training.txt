@@ -1,0 +1,36 @@
+-- Introduction --
+	- JS thought as front-end tech (interactivity with Web apps)
+		- eg: JS for Browser (DOM)
+	- NodeJS, can use JS for Backend
+		- Command line tools
+		- Creating servers
+		- Interacting with file system
+		- Build Scalable event-driven applications
+
+	- Can become fullstack with HTML, CSS and JS
+	
+
+-- 1 What is Node.js --
+
+-- 1-1 Node.js History --
+	- Created in 2009 as JS runtime based on Chrome VA engine
+	- 2011: npm created
+		- sharing of open-source node libraries
+		- huge shift in how code was shared & maintained
+	- 2015: Node.js Foundation created
+		- Made up of several large companies
+			- IBM, Microsoft, Paypal etc.
+		- help maintain standards & growth of library
+-- 1-2 Installing Node.js --
+
+	- Current version: 
+		- Include all latest features
+		
+	- LTS version:
+		- most stable version
+
+
+-- 2 Node Globals --
+
+-- 2-1 Inspecting global object --
+	- In browser, 
