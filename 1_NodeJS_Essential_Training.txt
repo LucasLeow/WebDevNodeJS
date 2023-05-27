@@ -31,6 +31,39 @@
 
 
 -- 2 Node Globals --
+	- Explore what is commonly used in global namespace for typical Node.js files
 
 -- 2-1 Inspecting global object --
-	- In browser, 
+
+	- In browser, global object called window
+	- In NodeJS, global object called global
+	- Global object contains:
+		1) Objects
+		2) Values
+		3) Methods
+		
+		that can be used in any node.js files without having to import anything
+	
+	
+	
+		eg. console.log("Hello world");
+		// same as global.console.log("Hello world");
+		
+	- variables created within a file have their namespace scoped to that file 
+	eg. 
+	
+		let hello = "Hello from Node.js";
+		console.log(global.hello) // is undefined because hello not scoped to global ns
+		
+		let name = "Lucas";
+		console.log(`Hello ${name}`); // template string
+		
+-- 2-2 require() function --
+	- typically used for importing other modules
+
+	Some global methods and objects:
+		const path = require("path");
+		// "path" module, one of core modules in node.js
+	
+		- console.log(__dirname); // directory where file is located
+		- console.log(__filename); // current file path (entire)
