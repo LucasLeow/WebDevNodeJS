@@ -64,6 +64,113 @@
 	Some global methods and objects:
 		const path = require("path");
 		// "path" module, one of core modules in node.js
+		// must import to use
+		// "path" module used to work with paths
+
+		
+		const path = require("path");
+
+		console.log(__dirname); // directory where file is located
+		console.log(__filename); // current file path (entire)
+
+		console.log(`The file name is ${path.basename(__filename)}`);
+		
+		for (let key in global) { // to view global objects
+			console.log(key);
+		}
+		
+		Bunch of global functions printed from global:
+			global
+			clearInterval
+			clearTimeout
+			setInterval
+			setTimeout
+			queueMicrotask
+			performance
+			clearImmediate
+			setImmediate
+			
+-- 2-3 'process' global object --
+	- can be accessed anywhere since its a global object 
+	- to interact with current process instance
+		- environment information 
+		- read environment variables
+		- communicate with terminal (collect info from terminal)
+		- exit current process etc.
+		
+	Collect Info from terminal:
+		- in process.argv array
+		
+	eg.
 	
-		- console.log(__dirname); // directory where file is located
-		- console.log(__filename); // current file path (entire)
+	console.log(process.argv);
+	
+	output:
+	[
+	  'C:\\Program Files\\nodejs\\node.exe',  'E:\\SelfLearning\\BackEnd\\JavaScript\\WebDevNodeJS_Course\\code\\2_Node_Globals\\2-3_processArgv.js'      
+	] // path to node & path to file
+	
+	cmd: node 2-3_processArgv.js --user Lucas --greeting "Hello World"
+	output: 
+	
+	[
+	  'C:\\Program Files\\nodejs\\node.exe', 'E:\\SelfLearning\\BackEnd\\JavaScript\\WebDevNodeJS_Course\\code\\2_Node_Globals\\2-3_processArgv.js',     
+	  '--user',
+	  'Lucas',
+	  '--greeting',
+	  'Hello World'
+	]
+	
+	function grab(flag) {
+		let idxAfterFlag = process.argv.indexOf(flag) + 1; // indexOf returns idx of first occurrence of flag
+		return process.argv[idxAfterFlag]; // idxAfterFlag contains the flag value
+	}
+
+	// provided flag is --greeting & --user respectively
+	let greeting = grab("--greeting");
+	let user = grab("--user");
+
+	console.log(greeting); // Lucas
+	console.log(user); // Hello World
+	
+-- 2-4 & 2-5 Standard Input & output --
+	- Another feature of process object
+	- To communicate with process while its running
+	- process.stdout.write(`message to write to terminal`);
+	- process.stdin.on("data", function_to_execute);
+	
+	eg.
+	process.stdout.write("Writing to the terminal \n");
+	
+	const questions = [
+		"What is your name?",
+		"What is your favourite programming language?",
+		"What is your hobby?"
+	];
+	
+	const answers = [];
+	
+	function getAnswers(idx = 0) {
+		process.stdout.write(`\n ${questions[idx]}`)
+		process.stdout.write(` > `);
+	}
+	
+	getAnswers()
+	
+	process.stdin.on("data", function(data) {
+		answers.push(data.toString().trim());
+		if (answers.length < questions.length) {
+			getAnswers(answers.length);
+		} else {
+			process.exit();
+		}
+	});
+	
+	process.on("exit", () => {
+		for (let i = 0; i < answers.length; i++) {
+			process.stdout.write("\n");
+			process.stdout.write(`Answer ${i+1} : ${answers[i]}`);
+		}
+	})
+	
+-- 2-6 Creating delay with setTimeout --
