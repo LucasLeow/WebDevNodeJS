@@ -174,3 +174,17 @@
 	})
 	
 -- 2-6 Creating delay with setTimeout --
+	- executes a function once after given time
+
+	const waitTime = 3000; // 3000ms = 3s
+	console.log(`Setting a ${waitTime / 1000} second delay`);
+	
+	setTimeout(() => {
+		console.log("Timer elapsed");
+	}, waitTime);
+	
+-- 2-7 setInterval --
+	- same as setTimeout but executes function continuously after every interval
+	
+	
+	* Refer to JSSyntax.txt : Timers to find out more details
