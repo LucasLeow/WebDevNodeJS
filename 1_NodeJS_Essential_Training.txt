@@ -249,6 +249,7 @@
 	})
 
 -- 3-3 Using readline more effectively --
+
 	- passing callback functions as arguments common in async JS
 	eg.
 	
@@ -294,6 +295,7 @@
 	- all variables & functions in each file scoped to that module
 	- variables and functions must be exported to be consumed by other files
 	- modules can be published to npm to be shared
+	- module.exports = (Whatever that should be returned) (can be single variable / function)
 	eg.
 	
 	in customModule.js:
@@ -321,4 +323,59 @@
 
 -- 3-5 NodeJS Emitter Module --
 	- Event emitter module: Node.js implementation of pub sub design pattern
+	- require("events") module
 		- create listeners and emit custom events
+	- event emitter: tool to decouple logic & handle asynchronicity in JS
+	
+-- 3-6 Creating module from readline eg earlier --
+	
+	-- in collectAnswers.js --
+	
+		const readline = require("readline");
+		const {EventEmitter} = require("events");
+
+		const rl = readline.createInterface(
+			{input: process.stdin,
+			output: process.stdout
+			}
+		);
+
+		module.exports = function collectAnswers (questions, done) {
+			const answers = [];
+			const emitter = new EventEmitter();
+
+			const questionAnswered = answer => {
+				answers.push(answer.trim());
+				emitter.emit("answer", answer);
+
+				if (answers.length < questions.length) {
+					rl.question(questions[answers.length], questionAnswered)
+			   } else {
+				   return done(answers);
+			   }
+			};
+			rl.question(questions[0], questionAnswered);
+			return emitter;
+		}
+
+	
+	-- in ask.js: --
+	
+		const collectAnswer = require("./3-6_collectAnswer");
+
+		const questions = [
+			"What is your name?",
+			"Where do you live?",
+			"What are you doing later?"
+		];
+
+		const answerEvents = collectAnswer(questions, function done(answers) {
+			for(let i = 0; i < answers.length; i++) {
+				console.log(answers[i]);
+			}
+			process.exit();
+		});
+
+		answerEvents.on("answer", answer => console.log(`The answer is ${answer}`));
+		
+	
