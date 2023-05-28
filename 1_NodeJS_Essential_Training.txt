@@ -377,5 +377,245 @@
 		});
 
 		answerEvents.on("answer", answer => console.log(`The answer is ${answer}`));
+
+
+-- 4 File Management & Streams Using NodeJS --
+
+-- 4-1 Listing Directory Files using fs --
+
+	- Module that interact with file system
+	- fs Module:
+		- list files & directories
+		- create files & directories
+		- stream files
+		- change file permissions etc.
+	- when working with fs module, choice to work synchronously or asynchronously
+		- if working asynchronously, process can do other things
+	
+	eg. 
+	const fs = require("fs");
+	
+	let files = fs.readdirSync("./"); // read current directory
+		- read current directory Synchronously with blocking request
+		- blocking rest of process until file is read
+	console.log(files);
+	
+	Asynchronous: (Good to run async fn in background and other process can run)
+	
+	let files = fs.readdir("./", function(err, files) {
+		if (err) {
+			throw err;
+		}
 		
+		console.log(files);
+	})
+	
+-- 4-2 Reading files using fs --
+	- read content of files encoded in text format
+		- typically "UTF-8" format
+		
+	eg.
+	
+	
+	const fs = require("fs");
+
+	// Synchronous implementation:
+	
+	let ipsum = fs.readFileSync("./readme.md", "UTF-8");
+	console.log(ipsum);
+
+	// Asynchronous implementation:
+	
+	fs.readFile("./readme.md", "UTF-8", (err,ipsum) => {
+		console.log(ipsum);
+	});
+
+-- 4-3 Writing & Appending files --
+
+	-- Writing to file --:
+	
+	const fs = require("fs");
+
+	let md_content = `
+		This is a new file
+		===============
+
+		ES6 Template Strings are very cool.
+
+		* Template Strings
+		* Node File System
+		* Readline CLIs
+	`;
+
+	let newFilePath = "./new.md";
+
+	fs.writeFile(newFilePath, md_content.trim(), function (err) {
+		if (err){
+			throw err;
+		}
+		
+		console.log("Markdown created");
+	});
+	
+	-- Appending to file --:
+	let add_content = "\n\n Adding new content here";
+
+	let FilePath = "./new.md";
+
+	fs.appendFile(FilePath, add_content.trim(), function (err) {
+		if (err) {
+			throw err
+		}
+		console.log("Markdown appended");
+	});
+	
+-- 4-4 Creating directories -- 
+
+	const fs = require("fs");
+
+	dir_path = "./newDir";
+
+	if (fs.existsSync(dir_path)) {
+		console.log("Directory already exists");
+	} else {
+		fs.mkdir(dir_path, function(err) {
+			if(err) {
+				console.log(err);
+			} else {
+				console.log("directory created");
+			}
+		});
+	}
+	
+-- 4-5 move, rename, remove files --
+	- same thing can be used on directory (for renaming)
+	
+		Directory path eg:
+		- .assets/logs
+		- code/NodeJS_Essential_Trg
+		
+	- To delete directory, must use rmdir (see below)
+		- Directory must be empty, else error thrown
+	
+	const fs = require("fs");
+	fs.renameSync(currentFilePath, newFilePath);
+	fs.rename(currentFilePath, newFilePath, (err) => {
+		if (err) {
+			throw err;
+		}
+		console.log("file successfully renamed");
+	});
+	
+	fs.unlinkSync(currentFilePath); // delete file
+	fs.unlink(currentFilePath, (err) => {
+		if (err) {
+			throw err;
+		}
+		
+		console.log("file deleted");
+	});
+	
+	fs.rmdir(dirToDelete, (err) => {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log("Directory successfully deleted");
+		}
+	});
+	
+	fs.readdirSync("./accounts").forEach((file) => {
+		fs.renameSync("./accounts/${file}", "./library/${file}");
+	});
+	
+	console.log("File transferred from accounts to library");
+	fs.rmdirSync("./accounts");
+	console.log("accounts directory deleted");
+	
+-- 4-6 Streams in NodeJS --
+	- Asynchronously handle continuous data flow
+	- improve application handling of data
+
+	
+	Readable Streams:
+		- process.stdin.on("data", function_to_execute);
+		- fs.readFile(file_path, encoding, callback) problem:
+			- execute callback only after entire file_path is read
+			- if file is big, latency occurs
+		- solution: use readable file stream
+		- filestream breaks the data into chunks instead of reading entire file
+		- don't have to wait for entire file to load to start reading data
+		- similar to streaming video, where small chunks of videos loaded instead of downloading entire video before watching
+		
+		eg.
+		const fs = require("fs");
+		
+		let stream = fs.createReadStream(file_path, file_encoding)
+		stream.once("data", (chunk) => {
+			console.log("Read stream started");
+			console.log("==================");
+			console.log(chunk);
+		});
+		
+	Writable Streams:
+		- write data chunks to file
+		
+		eg:
+		
+		const fs = require("fs");
+
+		let answerStream;
+
+		const questions = [
+			"What is your name?",
+			"Where do you live?",
+			"What are you doing later?"
+		];
+
+		const answers = [];
+
+		function ask(i) {
+			process.stdout.write(`\n\n ${questions[i]}`);
+			process.stdout.write(`   >   `);
+		}
+
+		process.stdin.once("data", (data) => { // first data is name input
+
+			let name = data.toString().trim();
+			let file_path = `./${name}.md`;
+
+			if (fs.existsSync(file_path)) {
+				fs.unlinkSync(file_path); // if file exist, remove it
+			}
+			answerStream = fs.createWriteStream(file_path);
+			answerStream.write(`Question Answers for ${name} \n
+			==========================\n
+			`)
+		});
+
+		process.stdin.on("data", function(data) {
+			let answer = data.toString().trim();
+			
+			answerStream.write(`Question: ${questions[answers.length]}\n`);
+
+			answerStream.write(`Answers: ${answer}\n`, () => {
+				if (answers.length < questions.length) {
+					ask(answers.length);
+				} else {
+					process.exit();
+				}
+			});
+			
+			answers.push(answer);
+		});
+
+		process.on("exit", () => {
+
+			answerStream.close();
+			process.stdout.write(`\n\n`);
+			console.log(answers);
+		});
+
+		ask(answers.length);
+
+
 	
