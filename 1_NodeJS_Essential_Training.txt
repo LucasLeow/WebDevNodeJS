@@ -188,3 +188,137 @@
 	
 	
 	* Refer to JSSyntax.txt : Timers to find out more details
+
+-- 2-8 Using intervals as Progress bar --
+
+	let currentTime = 0;
+	let waitInterval = 500; // 0.5s
+	let totalWaitTime = 5000; // 5s in total
+
+	const incTime = () => {
+		currentTime += waitInterval;
+		const percentage = Math.floor((currentTime / totalWaitTime)* 100) ;
+		process.stdout.clearLine();
+		process.stdout.cursorTo(0);
+		process.stdout.write(`waiting...${percentage}`);
+	}
+
+	setTimeout(() => {
+		clearInterval(interval);
+		process.stdout.write("\nLoading complete");
+	}, totalWaitTime);
+
+	let interval = setInterval(incTime, waitInterval);
+	
+
+-- 3 Node Modules -- 
+
+-- 3-1 Understanding Core Modules --
+	- const path = require("path"); // works with path 
+	- const util = require("util"); // has util.log fn that provides timestamp etc.
+	- const v8 = require("v8"); // to see memory usage of program
+
+
+	- require() function to import core modules
+	eg: 
+		const path = require("path");
+		const util = require("util");
+		
+		console.log(path.basename(__filename));
+		
+		const dirUploads = path.join(__dirname, "www", "files", "uploads");
+		console.log(dirUploads);
+		
+		util.log(path.basename(__filename));
+		
+		util.log(v8.getHeapStatistics());
+		
+-- 3-2 Collecting info with "readline" module --
+	- ask questions from terminal users
+	- wrapper around stdin and stdout process
+	
+	eg.
+	const readline = require("readline");
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+		});
+	
+	rl.question("How do you like Node?", answer => {
+		console.log(`Your answer: ${answer}`);
+	})
+
+-- 3-3 Using readline more effectively --
+	- passing callback functions as arguments common in async JS
+	eg.
+	
+	const readline = require("readline");
+	const rl = readline.createInterface(
+		{input: process.stdin,
+		output: process.stdout
+		}
+	);
+
+	const questions = [
+		"What is your name?",
+		"Where do you live?",
+		"What are you doing later?"
+	];
+
+	function collectAnswers (questions, done) {
+		const answers = [];
+
+		const questionAnswered = answer => {
+			answers.push(answer.trim());
+
+			if (answers.length < questions.length) {
+				rl.question(questions[answers.length], questionAnswered)
+		   } else {
+			   return done(answers);
+		   }
+		};
+		rl.question(questions[0], questionAnswered);
+	}
+
+	collectAnswers(questions, function done(answers) {
+		for(let i = 0; i < answers.length; i++) {
+			console.log(answers[i]);
+		}
+		process.exit();
+	})
+
+-- 3-4 Exporting custom modules --
+	- Every JS file is a module
+	- modules are imported using the require() function
+	- modules are exported using module.exports
+	- all variables & functions in each file scoped to that module
+	- variables and functions must be exported to be consumed by other files
+	- modules can be published to npm to be shared
+	eg.
+	
+	in customModule.js:
+		let count = 0;
+		const inc = () => ++count;
+		const getCount = () => count;
+		
+		module.exports = {
+			anything: true,
+			who: "Lucas",
+			count,
+			inc,
+			getCount
+		};
+		
+	in app.js:
+	
+	const customModule = require("./customModule.js"); // if both file in same dir
+	
+	const {inc, getCount} = require("./customModule.js"); // import only the 2 fns
+	
+	console.log(customModule.anything); // prints true 
+	console.log(customModule.inc()); //
+	
+
+-- 3-5 NodeJS Emitter Module --
+	- Event emitter module: Node.js implementation of pub sub design pattern
+		- create listeners and emit custom events

@@ -10,7 +10,6 @@ const incTime = () => {
     process.stdout.write(`waiting...${percentage}`);
 }
 
-
 setTimeout(() => {
     clearInterval(interval);
     process.stdout.write("\nLoading complete");
