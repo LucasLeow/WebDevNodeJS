@@ -1,0 +1,76 @@
+-- Introduction to ExpressJS --
+
+	- App framework for Node.js
+	- allow front-end engineers to handle APIs + backend functionalities of web app
+	- front-end (client-side) JS involves JS Browser (query)
+	- back-end (server-side) JS will involve backend functions
+		- JS packages (npm)
+		- Express framework (also many other frameworks)
+		- Node.js global object and some packages (as from Node.js Essential Training)
+	- Express is framework to generate server-side code for app
+		- creating endpoints for app
+		- creating server
+		- routing knowledge
+
+-- 1 First Steps --
+
+-- 1-2 What is Express.js? --
+
+	- minimal, flexible node.js app framework
+	- 1 of the more popular framework for node.js
+		- build websites / web apps / APIs using JS
+		- handle / simplify responses from API requests
+		- supports templating engine to simplify HTML generation
+			- Templating Engine: To create HTML templates with minimal code
+			- feed variables into templates eg: `This is a JS template string ${var_name}`;
+			
+	Client (front-end) -> Node HTTP Server -> Express.js -> MiddleWare : All are requests
+	Middleware -> Node HTTP Server -> Client : All are responses
+	
+
+-- 1-3 Express Application Generator --
+
+	- package that quickly inits skeleton project
+	- new technique: using npx, so dont have to install redundant package that runs only at the start of every project
+	
+		type express -h to find out the different flags available when initing new project
+		
+		Type of template engine support:
+			--ejs
+			--pug
+			--hbs (handlebars engine support)
+			--hogan (hogan.js engine support)
+			--view (view <engine> support)
+			--no-view (static html instead of view engine) etc.
+	
+		1) Creating empty directory for project
+		2) npm install express-generator
+		3) express --git --hbs testapp (add .gitignore file + use handlebars template engine)
+			- creates a new expres project known as testapp
+		4) cd to testapp and type npm install (to install dependencies)
+		5) set DEBUG=testapp:* & npm start (to start server)
+		
+	
+	Some common files / folders of project:
+		- "node_modules" directory:
+			- generated after npm install
+			- to store the packages (dependencies)
+			
+		- "public" directory: 
+			- images dir
+			- javascripts dir
+			- stylesheets dir
+				- styles.css (some basic css for default page)
+		
+		- "routes" directory: (default routes set-up for running of server)
+			- index.js
+			- users.js
+		
+		- "views" directory:
+			- contain HandleBars file (template engine)
+			- can pass variables into template engines to generate view
+			- look into these template engine in separate course
+	
+		- app.js file (many default boilerplate js created for quick app init)
+		- .gitignore file
+		- package.json file (for managing dependencies / other info)
