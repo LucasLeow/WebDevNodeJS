@@ -36,3 +36,121 @@ NPM: Node Package Manager
 -- 2 Getting Started with NPM --
 
 -- 2-1 Initializing package.json file --
+
+	- package.json is map for building project & configuring dependencies
+	- npm init (in terminal at desired dir)
+		- package name: (typically current dir name)
+		- version: (1.0.0) // default
+		- description: (write 1 or can leave blank)
+		- entry point: (index.js) // default
+		- test command: (can leave blank)
+		- git repository: 
+		- keywords: (can leave blank if nothing)
+		- author: Lucas
+		- License:: (ISC) // default
+		
+	- after the above, package.json will be created
+	
+	Inside package.json:
+	
+		"main": is the entry point for project (typically index.js)
+		"scripts": {} // contains the necessary scripts that will run when npm start called
+		
+-- 2-2 Adding node packages --
+	- adding package locally vs globally
+		- locally: package installed at project directory
+		- globally: installed in system, avail to all projects
+		
+	Installing node packages:
+		1) Go to desired project directory in terminal
+		2) Type npm install <desired_package>
+			eg. 
+				npm install express
+				npm install -save-dev babel-cli (dev dependencies)
+				
+				-save-dev : special keyword for npm to install as dev tools
+					- won't be included in production build
+					- only used throughout development
+
+-- 2-3 Installing package globally --
+	- sometimes better to install package globally
+	- eg: CLI tool for creating new React apps
+	
+	* There exists a new better way
+		- using "npx" + command of package
+		
+		eg:
+			npx create-react-app myAppName
+				- install packages temporarily on system
+				- command is performed
+				- removes packages from system
+				
+	- When installing globally, will save packages in global directory:
+		eg: AppData/npm/node_modules
+	- possible to change global installation directory, refer to stackoverflow on steps
+		
+	Command for installing packages globally:
+	
+		- npm install react -g
+		- npm install create-react-app -g
+		
+-- 2-4 & 2-5 Installing, Updating, Uninstalling dependencies --
+	- sometimes, there will be warnings of packages out of date
+	- specific version of package may be installed (compatible for other modules)
+	
+	Installing specific version:
+	
+		- npm install eslint@5.2.0
+		
+	Checking outdated packages:
+		- npm outdated
+		
+	Updating outdated packages:
+		- npm update eslint / npm install eslint
+	
+	Removing packages:
+		- npm uninstall eslint 
+		- npm uninstall -g
+		- npm uninstall -save-dev
+	
+-- 2-6 Semantic Versioning --
+
+	1.4.2
+		- 1: Major releases
+			- full new version of software
+			
+		- 4: Minor releases
+			- adding new functions (new tool)
+			
+		- 2: Patch releases
+			- Patches & bug fixes
+		
+	^5.2.0
+	^6.26.0
+	
+	^: npm will install any recent version available
+		- only for all minor and patch releases
+		- eg: if express version shows 4.16.2 in package.json,
+			- will only install any 4.xx.x versions and never version 5.xx.x
+		- default when installing using npm
+	
+	
+	~1.5.x
+	~: A stricter versioning approach
+		- only for patch releases only
+		- if express 4.16.2, npm will only install version 4.16.x
+		- will never install version 4.17.x or 5.x.x etc.
+		
+	Specific:
+	"express": "4.16.3"
+		- will always install version 4.16.3
+		- don't include any characters
+
+-- 2-7 package-lock.json --
+	- when running npm install <package>,
+		- package.json is the input
+		- package-lock.json is the output
+			- records the exact version of every installed dependency
+			- ensure same dependencies installed consistently across different environment
+				- eg development & production environment
+		
