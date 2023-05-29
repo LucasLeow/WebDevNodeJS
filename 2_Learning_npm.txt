@@ -1,0 +1,38 @@
+-- Introduction --
+
+NPM: Node Package Manager
+	- commands & functions
+	- adding | updating | removing packages
+	- NPM cache
+	- NPM audits
+	- NPM scripting
+	
+-- 1 Definition & Installation --
+
+-- 1-1 Defining a package & npm --
+	- JS Frameworks: Angular | React | Express
+	- JS Runtime: Node.js
+	- Language: JS
+	
+	- npm (package manager) to install dependencies
+		- preinstalled with Node.js
+		- comes with package.json file
+			- map of project
+				- who created it
+				- version of packages
+				- packages needed to be installed
+				
+	- Package | Module | Dependency:
+	
+		Module: A JS file used to perform some function(s)
+		Package: Collection of modules
+		Dependency: Required modules for program to work
+		
+	- npmjs.com : To search for all available packages
+		- If think of something needed, most likely a package is already existing to do it
+		- to build lightweight projects easily shared across dev teams
+		
+
+-- 2 Getting Started with NPM --
+
+-- 2-1 Initializing package.json file --
