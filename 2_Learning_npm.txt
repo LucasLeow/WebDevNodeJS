@@ -32,6 +32,11 @@ NPM: Node Package Manager
 		- If think of something needed, most likely a package is already existing to do it
 		- to build lightweight projects easily shared across dev teams
 		
+	- Dependencies:
+		- Packages required to run project successfully
+		- includes the version of each package installed during development
+			- refer to semantic versioning for meaning of characters
+		
 
 -- 2 Getting Started with NPM --
 
@@ -153,4 +158,59 @@ NPM: Node Package Manager
 			- records the exact version of every installed dependency
 			- ensure same dependencies installed consistently across different environment
 				- eg development & production environment
+				
+		eg:
+		"express": "^4.15.4"
 		
+		if no package-lock.json file, when run npm install,
+		will install latest minor release of express
+			i.e "express" : "4.25.3"
+			
+		if have package-lock.json, will install "4.15.4"
+		
+	* Make sure to commit package-lock.json to repo to ensure dependencies version run correctly
+	
+
+-- 3 Publishing Package --
+
+	* Need to have account with npm.js to publish
+
+	- Scope of package added during npm init
+	
+	For scoped package:
+		npm init -scope=@lucasleow
+		npm init -scope=@citiTeam1
+		
+	For unscoped package:
+		npm init
+
+-- 3-1 Publishing unscoped package --
+
+	- unscoped package: No organization attached to name (typically default)
+		- always public
+		
+	- Everyone will see package on npmjs
+	
+	- name of package: learning_npm (eg.)
+	
+	Steps:
+	
+		1) Test package installation before publishing
+		2) Create a new empty folder for testing
+		3) npm init
+		4) npm install <local_path_to_package>
+		5) After testing, Go back to project directory of original package
+		6) go to terminal and type: npm publish
+
+
+-- 3-2 Publishing scoped package --
+
+	- scoped package: Organization attached to name or own username attached
+	- may be public or private
+	
+	- name of package: @algofields/learning_npm
+	
+	Steps:
+		1) Test package as per steps above
+		2) go back to project dir & npm publish -access public
+			- if only use npm publish (access will be private)
