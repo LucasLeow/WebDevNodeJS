@@ -211,6 +211,102 @@ NPM: Node Package Manager
 	- name of package: @algofields/learning_npm
 	
 	Steps:
+	
 		1) Test package as per steps above
 		2) go back to project dir & npm publish -access public
 			- if only use npm publish (access will be private)
+	
+
+-- 4 Advanced Subjects --
+
+-- 4-1 npm cache --
+	- npm keeps cache of installed modules so don't have to retrieve modules everytime
+	- may lead to unexpected problems
+		- sometimes, clearing cache may solve a dependency problem
+		- clearing npm cache should be part of troubleshooting step
+		
+		- npm cache verify
+			- takes some time to execute
+			- performs garbage collection & any potential issues
+		
+		- npm cache clean -force
+			- cleans the npm cache
+			
+-- 4-2 npm audit --
+	- check dependencies of project to ensure safe to use
+	- whenever npm install, audit runs automatically
+		- flags any issues with package
+	- requires npm v6 above to work
+	
+	- whenever issues flagged out during install, run npm audit to check more info
+	- will take some time to generate detail logs
+	
+	- run npm audit fix to automatically fix issues
+		- else troubleshoot manually by reading logs & installing necessary
+		- sometimes, no fix available. then best to use other packages
+		
+-- 4-3 npm scripting --
+	- scripting a package.json file
+	- to repeat simple commands / execute complex commands
+	- added in "scripts": {
+		"precompress": "{{ executes BEFORE the `compress` script}}",
+		"compress": "{{ run command to compress files }}",
+		"postcompress": "{{ executes AFTER `compress` script }}"
+	}
+	
+	- There exist other lifecycle scripts:
+		- prepare
+		- prepublish
+		- prepublishOnly
+		- prepack
+		- postpack
+		- dependencies
+		
+	eg. (adding script that will run upon "npm start")
+		- Nodemon: Run node server, restarts server whenever changes made
+		- ensure npm install Nodemon is performed
+		
+		"scripts": {
+			"start": "nodemon ./index.js --exec babel-node"
+		}
+		
+		- nodemon is the command
+		- entry point of server: ./index.js
+		- compile with --exec babel-node
+		
+		upon, npm start, script will run nodemon command, else must manually run the command
+		
+
+-- 4-4 Intro to npx --
+
+	- installing CLI tools from NPM packages just to be used once
+		- eg: create-react-app tool to initialize a new react project
+	- causes package pollution in global directories
+	- npx resolves this issue
+		- require npm v5.2 and above
+		
+	eg. creating new Angular project without Angular tool
+	
+		1) create new dir
+		2) npx -p @angular/cli ng new myapp
+			- ng new myapp is the command from angular cli tool
+			
+		npx mocha: installs mocha inside project
+		
+		"scripts": {
+			"start": "nodemon ./index.js --exec babel-node",
+			"createang": "npx -p @angular/cli ng new myapp"
+		}
+		
+		inside terminal:
+			npm run createang // for custom scripts, must use npm run <customScriptName>
+
+
+-- 4-5 Alternatives to npm --
+	- Yarn
+		- Introduce by FB team
+		- Also has lock file (package-lock.json)
+		- known to be faster than npm
+		- npm slowly introducing yarn benefits
+		
+			
