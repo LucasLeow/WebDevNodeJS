@@ -107,7 +107,7 @@
 		8) add script
 			- "start": "nodemon --experimental-json-modules --exec babel-node index.js"
 				- nodemon: to use nodemon package
-				- --experiment-json-modules: to load json files
+				- --experiment-json-modules: to load json files using ES6 syntax
 				- --exec babel-node index.js: run server using babel, start app from index.js file
 				
 		9) create index.js file (entry point for app)
@@ -505,3 +505,55 @@
 		console.log(error.stack); // stack trace
 		res.status(500).send("Something is broken!");
 	})
+	
+-- 4-4 3rd Party middleware --
+	- A lot of middleware packages available
+	- may not be maintained & possibly have security issues
+	- Express documentation have list of 3rd party middleware
+	
+-- 5 Taking Express 1 step further -- 
+
+-- 5-1 Debugging Express Application --
+	- Debug mode:
+		- see all internal logs in Express
+		- Express uses debug module internally
+			- log info about:
+				- route matches
+				- middleware functions in use
+				- app mode
+				- flow of request-response cycle
+	
+	- command: set DEBUG=express:* & node --experimental-json-modules index.js
+	
+	- can add in package.json
+		"debug": "set DEBUG=express:* & nodemon --experimental-json-modules index.js"
+		
+	- type: npm run debug (must include run if custom key value, in this case "debug")
+	
+	
+-- 5-2 Using Express with Database --
+	- can use express to connect to database to read / write data more robustly
+	- mainly using HTTP methods
+	- refer to Express with Database for more info
+	
+-- 5-3 Security Concerns & best practices --
+	- Refer to linkedin-learning course for more info
+	
+	1) Keep most up to date version of Express
+		- Older version susceptible to vulnerabilities
+		
+	2) Use Transport Layer Security (TLS) encryption
+		- keep communication over web as secure as possible
+		
+	3) Use "Helmet" module
+		- setting HTTP headers appropriately & securely
+		- A collection of middleware functions that set security related HTTP response headers
+		
+	4) Use cookies securely
+		- cookies: how web browsers store & track data about user session
+		
+	5) Block authorization attempts to prevent brute force attacks
+		- rate-limiter-flexible package
+	
+	6) Ensure dependencies are secure
+		- using "npm audit" in terminal
