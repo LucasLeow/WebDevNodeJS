@@ -74,3 +74,206 @@
 		- app.js file (many default boilerplate js created for quick app init)
 		- .gitignore file
 		- package.json file (for managing dependencies / other info)
+		
+
+-- 2 Express Basics --
+
+-- 2-1 Getting Started: Server & Project Setup --
+
+	Steps:
+	
+		1) Create project directory (eg. express-essentials)
+		2) navigate to project dir in terminal prompt (vscode)
+		3) npm init (to create package.json file)
+			- entry point: index.js
+		4) npm install express nodemon
+			- helps restart server every time there is new changes
+		5) npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node
+			- babel is a compiler for compiling ES6 JS
+			- babel is dev dependency (--save-dev) (only use in dev, not in prod)
+		6) create .babelrc file (config file for babel)
+			- to indicate presets that have been installed
+			{
+			"presets": [
+				"@babel/preset-env"
+				]
+			}
+		7) Check package.json to ensure all dependencies downloaded earlier present
+			- under "name", add "type": "module"
+				- to be able to use modules introduced in ES6
+				- modules will be imported/exported inside index.js file
+					- instead of using require() fn used in previous version of JS
+					- some projects / documentation may still reference old JS 
+		8) add script
+			- "start": "nodemon --experimental-json-modules --exec babel-node index.js"
+				- nodemon: to use nodemon package
+				- --experiment-json-modules: to load json files
+				- --exec babel-node index.js: run server using babel, start app from index.js file
+				
+		9) create index.js file (entry point for app)
+			- entrypoint file can be named with other names
+				- app.js
+			- ensure package.json file, "main" : "app.js" 
+				- main is the entry point for project
+			- ensure command "--exec babel-node app.js" instead
+		
+		10) Inside index.js file:
+		
+				import express from "express";
+				
+				const app = express();
+				const PORT = 3000; // not necessary but good to follow
+				
+				app.listen(PORT, ()=>{
+					console.log(`The server is running on port ${PORT}`)
+				});
+				
+				// app.listen(port_number, callback);
+
+-- 2-2 Adding data (json) to Project --
+
+	- When developing API
+		- want to test how data is displayed
+		- want to use mock data
+			- https://www.mockaroo.com
+			- save mock.json in project directory
+			
+		inside index.js file:
+		
+		import data from './data/mock.json' assert {type: "json"};
+		
+		app.listen(PORT, ()=>{
+			console.log(`The server is running on port ${PORT}`);
+			console.log(data);
+				});
+		
+		Import assertion:
+			- introduced in ES12 (2021)
+			- specify metadata about imported data/modules
+			
+			eg:
+			import defaultExport from 'module' assert { assertion };
+			import * as namedExports from 'module' assert { assertion };
+			import { namedExport } from 'module' assert { assertion };
+			
+			import { foo } from './module.js' assert {
+			  type: 'json',
+			  integrity: 'sha384-ABC123'
+			};
+	
+	Server side vs client side code
+		- Browser is tied to client side code
+		- Code written in index.js is server side code
+			- thus, any console.log will not show in the browser
+		- want to create a bridge between server and client side code
+		
+		HTTP methods
+			- GET: used to retrieve data
+			- POST
+			- PUT
+			- DELETE
+
+-- 2-3 HTTP methods & routes --
+
+	- Route:
+		- How application responds to client request to a particular endpoint
+		- Consist of a path & a HTTP request
+	
+	- Endpoint:
+		- 1 end of a communication channel
+		- For APIs, endpoint can include a URL of a server / service
+	
+	- As user on web, constantly interacting with routes
+		- when visiting URL, it is a route that has been coded to serve specific info
+			- served info based on page & associated HTTP methods
+	
+	- HTTP methods:
+		- actions taken on specific resource
+		- GET: Retrieves data from server
+			- retrieve data to display / render page
+		- PUT: Updates existing resource
+		- POST: Sends data to server, creating new resource
+		- DELETE: Delete existing resource
+	
+	- HTTP messages:
+		1) Requests: Sent by client to trigger action on server
+		2) Responses: Answers from Server
+	
+	Constructing Route:
+		- each HTTP method takes in 2 argument (path, handler_fn)
+			- handler fn: fn to execute once path is found
+			
+	app.get('/', (request, response) => {
+		response.send("This is a GET request at /");
+	});
+	
+	app.post('/create', (request, response) => {
+		response.send("This is a POST request at /create");
+	});
+	
+	app.put('/edit', (request, response) => {
+		response.send("This is a PUT request at /edit");
+	});
+	
+	app.delete('/delete', (request, response) => {
+		response.send("This is a DELETE request at /delete");
+	});
+	
+		- '/': represents the root folder
+		- send(): send message to route
+		
+-- 2-4 Postman Tool --
+
+	- for GET methods, easy to test by referring to client side browser
+	- for POST | PUT | DELETE, not as straightforward
+		- can use Postman tool to test endpoints
+		
+	type localhost:3000/create in Postman URL
+		- change dropdown type to "POST"
+		- click send, should receive body showing response.send() msg
+		
+	- try the same for:
+		/edit - PUT
+		/delete - DELETE
+		
+
+-- 2-5 GET data, creating basic data endpoint
+	- take mock data & serve to client via a GET request to own server
+		- commonly done when building endpoints with express
+	- sometimes, may be querying data from databases as well
+	
+	eg.
+	
+	app.get("/", (req, res) => {
+		// first step is usually GET data from database + error handling
+		res.json(data); // serve data in json format upon request
+	});
+	
+-- 2-6 Serving static files with Express -- 
+	- Aside from querying & fetching data from APIs,
+	- Can also serve static files
+	
+	Static files: Files that does not change
+		- photos
+		- pdf
+		- document files
+		- HTML / CSS files
+		
+	Steps:
+		1) Create a folder called "public"
+		2) Create a folder called "images", within public folder
+		3) app.use(express.static("./public/images"));
+			- can serve any static images in this public folder
+			- built-in middleware method (express.static)
+		4) Paste img in images folder and name it as test1.jpg
+		5) open localhost:3000/test1.jpg
+		
+	Alternatively:
+		1) Create "images" folder in project root directory
+		2) Place image named test1.jpg within images folder
+		3) app.use("/images", express.static("images"));
+			- first argument is route 
+				- serve images stored at "/images"
+		4) Go to browser & type:
+			localhost:3000/images/test1.jpg
+		
