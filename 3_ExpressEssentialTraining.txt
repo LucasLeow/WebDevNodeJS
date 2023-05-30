@@ -276,4 +276,145 @@
 				- serve images stored at "/images"
 		4) Go to browser & type:
 			localhost:3000/images/test1.jpg
+			
+-- 3 Express Routing Fundamentals --
+
+-- 3-1 Routing Parameters --
+
+	Route:
+		- How application responds to client request to particular endpoint
+		- Postman tool can be used to access a variety of different routes
+			- Routes = path + HTTP method
+			eg:
+			
+			app.get("/animals", (req, res) => {
+				res.json(data);
+			})
+			
+			Path = "/animals". Can be "/images","/payments" etc.
+			HTTP method: GET
 		
+	4 General Route Methods
+		- POST: Create
+		- GET: Read
+		- PUT: Update
+		- DELETE: Delete
+		
+	Route Parameters
+		- Segments of URL used to capture values specified at positions within URL
+		- if want to access values passed as parameters:
+			- use req.params
+			eg:
+				console.log(req.params.student_id)
+				
+		- Any route parameters will be transmitted as string
+			- if want to use as number, need to convert using JS string methods
+		eg:
+		
+		app.get("/users/:userId/books/:bookId", (req, res) => {
+			res.send(req.params);
+		})
+		
+		- userId & bookId are route parameters
+		
+		Route Path: "/users/:userId/books/:bookId"
+		Request URL: http://localhost:3000/users/34/books/8989
+		req.params: { "userId": "34", "bookId": "8989" }
+		
+	
+	-- Setting up Route Parameters in Express --
+	
+		app.get("/class/:student_id", (req, res) => {
+			console.log(req.params); // console log is server side code, show in terminal
+		})
+		
+		at url:
+			localhost:3000/class/10
+			
+		outcome:
+			- terminal shows {id : '10'}
+			- browser doesn't change, no data passed to client side
+			
+		app.get("/class/:student_id", (req, res) => { // see above for what data is imported from)
+		
+			const studentId = Number(req.params.student_id);
+			const student = data.filter( (item) => 
+				studentId === item.id
+			);
+			res.send(student);
+			
+		})
+
+-- 3-2 Route handlers --
+	- blocks of code that handle logic for routes
+	- can be a function, array of functions or both
+	- want route handlers (functions) to be simple and straightforward as possible
+	- possible to have multiple callbacks to handle different logic
+		- using next()
+			- not specific to node.js or express.js
+			- invokes the next middleware fn in app
+			- 3rd argument beside req, res, next.
+				- named as next by convention
+				
+	eg.
+	
+	app.get('/next', (request, response, next) => {
+		console.log("Response will be sent by next function");
+		next();
+	}, (req, res) => {
+		res.send("This is the response from 2nd callback");
+	}
+	);
+	
+-- 3-3 Common Response methods for Express Routing --
+
+	- When creating routes, various methods exist to handle response
+	- Response methods provide feedback to client
+	- Response methods work on the response object, transmitting info to client
+	- if method not used correctly, the info will not be transmitted from server to client
+	
+	* Express Documentation have full list of response methods that can be incorporated
+	
+		res.json() : Sends a JSON response
+		res.send() : Sends the HTTP Response
+		res.download() : Transfers file as attachment
+			- depending on browser, may have prompt to download or auto download
+		res.redirect("https://www.google.com") : Redirect user to different URL
+			- can be local to another page
+			- can be other website completely
+			
+
+-- 3-4 Route Chaining in Express --
+	- when creating routes in express
+	- may have several routes of same path but different methods (related)
+		- if unrelated, might want to come out with different path name
+	- start with app.route(path).get(callback).post(callback).put(callback)
+	
+	eg.
+	
+	app
+	.route("/class")
+	.get((req, res) => {
+		res.send("Retrieve class info");
+	})
+	.post((req, res) => {
+		res.send("Create class info");
+	})
+	.put((req, res) => {
+		res.send("Update class info");
+	})
+	 
+	 
+	app.get("/class", (req, res) => {
+		res.send("Retrieve class info");
+	});
+	
+	app.post("/class", (req, res) => {
+		res.send("Create class info");
+	});
+	
+	app.put("/class", (req, res) => {
+		res.send("Update class info");
+	});
+	
+-- 4 Express Middleware --
