@@ -418,3 +418,90 @@
 	});
 	
 -- 4 Express Middleware --
+
+-- 4-1 What is middleware --
+
+	- middleware functions:
+		- functions that have access to request (req) object, response (res) object and next() function.
+	
+	- Middleware functions can perform the following tasks:
+		- execute any code
+		- make changes to request and response objects
+		- end request-response cycle
+		- call next middleware in stack
+	
+	- middleware can come in many forms
+		- some are built-in Express
+		- some handle errors
+		- some are 3rd party middleware
+	
+-- 4-2 Express Built-in middleware --
+	- 3 built-in middleware
+		1) express.static
+			- serves static assets (files / images)
+		2) express.json
+			- parses incoming requests with JSON payloads (using body parser)
+				- Body parser is node.js parsing middleware
+				
+			eg.
+			{
+				"name": "Jamie Pittman",
+				"title": "instructor",
+				"age": 37
+			}
+			
+		3) express.urlencoded
+			- parses incoming requests with URL-encoded payloads (using body parser)
+			
+			eg.
+			
+			name=Jamie+Pittman&title=instructor&age=37
+			
+	eg.
+	in index.js:
+	
+		app.use(express.json());
+		app.use(express.urlencoded({extended: true}))
+			- extended: true argument provides more JSON-like experience
+		
+		app.post("/item", (req, res) => {
+			console.log(req.body); // log on server side terminal
+			res.send(req.body); // show on client side browser
+		})
+		
+	in Postman (JSON):
+		1) Select POST & type localhost:3000/item
+		2) Go to Headers tab and add:
+			Under Key tab: Content-Type
+			Under Value tab: application/json
+		3) Go to Body tab & select raw
+		4) Type in JSON eg
+			{
+				"item": "rollerblades"
+			}
+		5) Send the request
+	
+	in Postman (urlencoded)
+	
+		1) Select POST & type localhost:3000/item
+		2) Go to Headers tab and add:
+			Under Key tab: Content-Type
+			Under Value tab: application/x-www-form-urlencoded
+		3) Go to Body tab & select x-www-form-urlencoded
+		4) Type in:
+			Key tab: item
+			value tab: rollerblades
+		5) Send the request
+
+-- 4-3 Handling errors --
+
+	eg.
+	app.route("/class").get((req, res) => {
+		// res.send("Retrieve class info");
+		throw new Error();
+	})
+	
+	app.use((error, req, res, next) => {
+		console.log(error.stack); // stack trace
+		res.status(500).send("Something is broken!");
+	})
